@@ -10,4 +10,5 @@ public class ImageSharingAppServerApplication {
 		SpringApplication.run(ImageSharingAppServerApplication.class, args);
 	}
 
+
 }
