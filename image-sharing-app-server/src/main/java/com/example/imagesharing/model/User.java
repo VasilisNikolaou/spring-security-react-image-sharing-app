@@ -5,17 +5,17 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // jpa requires no-args constructor
 @Getter
 @Setter
 @ToString
 @Table(name = "users", uniqueConstraints = {
     @UniqueConstraint(columnNames = {
             "username"
-    }, name = "UQ_USERNAME"),
+    }, name = "UK_USERNAME"),
     @UniqueConstraint(columnNames = {
             "email"
-    }, name = "UQ_EMAIL")
+    }, name = "UK_EMAIL")
 })
 public class User {
 
