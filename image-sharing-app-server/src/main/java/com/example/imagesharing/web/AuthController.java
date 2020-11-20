@@ -30,7 +30,7 @@ public class AuthController {
 
     @PostMapping(value = "/signin",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<JwtAuthenticationResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtAuthenticationResponse> authenticateUser(@RequestBody final LoginRequest loginRequest) {
         final UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword());
 
@@ -42,7 +42,7 @@ public class AuthController {
 
     @PostMapping(value = "/signup",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse> registerUser(@RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<ApiResponse> registerUser(@RequestBody final SignUpRequest signUpRequest) {
          userService.saveUser(signUpRequest);
 
          ApiResponse response = new ApiResponse("Successful Registration");
