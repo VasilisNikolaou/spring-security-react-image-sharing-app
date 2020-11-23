@@ -36,6 +36,15 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    public Long getUserIdFromJWT(String authToken) {
+         return Long.valueOf(Jwts.parserBuilder()
+                  .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)))
+                  .build()
+                  .parseClaimsJws(authToken)
+                  .getBody()
+                  .getSubject());
+    }
+
     public boolean validateToken(String authToken) {
         try {
             Jwts.parserBuilder()
