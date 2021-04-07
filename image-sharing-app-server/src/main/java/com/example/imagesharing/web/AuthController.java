@@ -14,10 +14,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -30,7 +30,7 @@ public class AuthController {
 
     @PostMapping(value = "/signin",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<JwtAuthenticationResponse> authenticateUser(@RequestBody final LoginRequest loginRequest) {
+    public ResponseEntity<JwtAuthenticationResponse> authenticateUser(@RequestBody @Valid final LoginRequest loginRequest) {
         final UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword());
 
@@ -42,11 +42,11 @@ public class AuthController {
 
     @PostMapping(value = "/signup",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse> registerUser(@RequestBody final SignUpRequest signUpRequest) {
-         userService.saveUser(signUpRequest);
+    public ResponseEntity<ApiResponse> registerUser(@RequestBody @Valid final SignUpRequest signUpRequest) {
+        userService.saveUser(signUpRequest);
 
-         ApiResponse response = new ApiResponse("Successful Registration");
+        ApiResponse response = new ApiResponse("Successful Registration");
 
-         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

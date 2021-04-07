@@ -2,7 +2,6 @@ package com.example.imagesharing.config;
 
 
 import com.example.imagesharing.security.UserPrincipal;
-import com.sun.istack.Nullable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;

@@ -3,6 +3,7 @@ package com.example.imagesharing.security;
 import com.example.imagesharing.model.User;
 import com.example.imagesharing.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,8 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(final String usernameOrEmail) throws UsernameNotFoundException {
        User user = userRepo.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("User with the specified email/username: " +
-                          usernameOrEmail + " does not exists"));
+                .orElseThrow(() -> new UsernameNotFoundException("Bad Credentials"));
 
        return UserPrincipal.of(user);
     }
@@ -27,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserById(Long id) {
         User user = userRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("User with " + id + " can't be found"));
+                .orElseThrow(() -> new BadCredentialsException("Bad JWT"));
 
         return UserPrincipal.of(user);
     }

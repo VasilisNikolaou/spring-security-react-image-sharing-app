@@ -30,6 +30,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setSubject(String.valueOf(userPrincipal.getId()))
+                .claim("username", userPrincipal.getUsername())
                 .setExpiration(expiryDate)
                 .setIssuedAt(new Date())
                 .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)))

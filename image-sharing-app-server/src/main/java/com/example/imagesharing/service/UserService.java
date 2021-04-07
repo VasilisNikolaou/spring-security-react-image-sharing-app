@@ -3,7 +3,6 @@ package com.example.imagesharing.service;
 import com.example.imagesharing.model.User;
 import com.example.imagesharing.payload.SignUpRequest;
 import com.example.imagesharing.repository.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +28,4 @@ public class UserService {
                 signUpRequest.getLastName(),
                 signUpRequest.getEmail());
     }
-
-
 }

@@ -1,13 +1,15 @@
 package com.example.imagesharing.payload;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 
-@Getter
-@Setter
+import javax.validation.constraints.NotBlank;
+
+@Value
 public class LoginRequest {
 
-    private String usernameOrEmail;
-    private String password;
+    @NotBlank(message = "username or email cannot be null or empty")
+    String usernameOrEmail;
+
+    @NotBlank(message = "password cannot be null or empty")
+    String password;
 }

@@ -1,10 +1,11 @@
 package com.example.imagesharing.security;
 
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -16,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -30,24 +32,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
-        try {
-            String jwtToken = extractTokenFromRequest(httpServletRequest);
+        String jwtToken = extractTokenFromRequest(httpServletRequest);
 
-            if(jwtToken != null && jwtTokenProvider.validateToken(jwtToken)) {
+        if (jwtToken != null) {
 
-                Long userId = jwtTokenProvider.getUserIdFromJWT(jwtToken);
+            try {
+                if (jwtTokenProvider.validateToken(jwtToken)) {
+                    Long userId = jwtTokenProvider.getUserIdFromJWT(jwtToken);
 
-                UserDetails principal = userDetailsService.loadUserById(userId);
+                    UserDetails principal = userDetailsService.loadUserById(userId);
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    throw new BadCredentialsException("Bad JWT");
+                }
 
+            } catch (AuthenticationException authExc) {
+                httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                httpServletResponse.setContentType("application/json");
+
+                var map = new HashMap<>();
+                map.put("message", authExc.getMessage());
+                map.put("path", httpServletRequest.getRequestURL());
+
+                var mapper = new ObjectMapper();
+                mapper.writeValue(httpServletResponse.getOutputStream(), map);
+                return;
             }
-        } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
         }
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);
@@ -56,7 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String extractTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
 
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());
         }
 

@@ -1,16 +1,11 @@
 package com.example.imagesharing.payload;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 
-@Getter
-@Setter
+@Value
 public class JwtAuthenticationResponse {
 
-    private final String tokenType = "Bearer";
-    private String accessToken;
+    String tokenType = "Bearer";
+    String accessToken;
 
-    public JwtAuthenticationResponse(String accessToken) {
-        this.accessToken = accessToken;
-    }
 }
