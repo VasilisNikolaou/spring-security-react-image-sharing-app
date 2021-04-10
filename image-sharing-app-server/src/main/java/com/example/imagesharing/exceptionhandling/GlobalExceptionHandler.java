@@ -1,5 +1,7 @@
 package com.example.imagesharing.exceptionhandling;
 
+import com.example.imagesharing.exceptionhandling.exceptions.ImageEmptyException;
+import com.example.imagesharing.exceptionhandling.exceptions.ImageMIMETypeException;
 import com.example.imagesharing.payload.ApiError;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -28,7 +30,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
 
-        ApiError apiError = new ApiError(status.value(),
+        final ApiError apiError = new ApiError(status.value(),
                 "error input fields",
                 errors);
 
@@ -44,6 +46,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 null);
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
+    }
+
+    @ExceptionHandler({ImageMIMETypeException.class, ImageEmptyException.class})
+    public ResponseEntity<ApiError> handleMIMETypeNotValid(Exception ex) {
+        final ApiError apiError
+                = new ApiError(HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                null);
+
+        return ResponseEntity.badRequest().body(apiError);
     }
 
 }
