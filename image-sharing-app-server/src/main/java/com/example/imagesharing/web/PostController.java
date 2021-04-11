@@ -22,7 +22,7 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createPost(@Valid @ModelAttribute PostRequest postRequest, Errors errors) {
         if (errors.hasErrors()) {
             List<String> fieldErrors = errors.getFieldErrors()
