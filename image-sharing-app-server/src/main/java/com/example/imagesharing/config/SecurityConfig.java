@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.headers().frameOptions().disable();
         http
                 .cors()
                     .and()
@@ -51,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                 .authorizeRequests()
-                    .mvcMatchers("/api/auth/**")
+                    .mvcMatchers("/api/auth/**", "/h2-console/**")
                     .permitAll()
                 .anyRequest()
                     .authenticated();

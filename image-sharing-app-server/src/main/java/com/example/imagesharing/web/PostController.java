@@ -22,7 +22,7 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createPost(@Valid @ModelAttribute PostRequest postRequest, Errors errors) {
         if (errors.hasErrors()) {
             List<String> fieldErrors = errors.getFieldErrors()
@@ -36,8 +36,6 @@ public class PostController {
             return ResponseEntity.badRequest().body(apiError);
         }
 
-        postService.uploadImageAndSavePost(postRequest);
-
-        return ResponseEntity.ok(MediaType.IMAGE_JPEG.toString());
+        return ResponseEntity.ok(postService.uploadImageAndSavePost(postRequest));
     }
 }
