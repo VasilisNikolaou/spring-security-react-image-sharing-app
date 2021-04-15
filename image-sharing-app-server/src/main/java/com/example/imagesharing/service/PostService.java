@@ -42,7 +42,6 @@ public class PostService {
         }
 
         return this.postRepository.save(new Post(title, key));
-
     }
 
     private void checkMIMEType(String contentType) {
