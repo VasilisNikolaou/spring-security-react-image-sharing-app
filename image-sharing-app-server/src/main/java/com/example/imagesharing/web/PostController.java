@@ -2,9 +2,12 @@ package com.example.imagesharing.web;
 
 import com.example.imagesharing.payload.ApiError;
 import com.example.imagesharing.payload.PostRequest;
+import com.example.imagesharing.payload.projections.PostDTO;
 import com.example.imagesharing.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +39,14 @@ public class PostController {
             return ResponseEntity.badRequest().body(apiError);
         }
 
-        return ResponseEntity.ok(postService.uploadImageAndSavePost(postRequest));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(this.postService.uploadImageAndSavePost(postRequest));
     }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<PostDTO>> pagedPosts(@PageableDefault(page = 0, size = 5) Pageable pageable) {
+        return ResponseEntity.
+                ok(this.postService.pageablePosts(pageable));
+    }
+
 }

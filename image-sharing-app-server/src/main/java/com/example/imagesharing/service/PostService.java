@@ -4,14 +4,18 @@ import com.example.imagesharing.exceptionhandling.exceptions.ImageEmptyException
 import com.example.imagesharing.exceptionhandling.exceptions.ImageMIMETypeException;
 import com.example.imagesharing.model.Post;
 import com.example.imagesharing.payload.PostRequest;
+import com.example.imagesharing.payload.projections.PostDTO;
 import com.example.imagesharing.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -48,6 +52,16 @@ public class PostService {
         Arrays.stream(new String[]{MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE})
                 .filter(mimetype -> mimetype.equals(contentType))
                 .findAny().orElseThrow(() -> new ImageMIMETypeException(contentType));
+    }
+
+    public List<PostDTO> pageablePosts(Pageable pageable) {
+        Page<Long> pagedIdsOfPosts = this.postRepository.fetchIdsOfPosts(pageable);
+
+        if(pagedIdsOfPosts.getContent().size() > 0) {
+            return this.postRepository.fetchPostsWithoutPostComments(pagedIdsOfPosts.getContent());
+        }
+
+        return List.of();
     }
 
 }
