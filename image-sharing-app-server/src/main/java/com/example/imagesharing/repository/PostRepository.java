@@ -22,4 +22,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.postComments WHERE p.id IN ?1")
     @QueryHints(value = @QueryHint(name = org.hibernate.annotations.QueryHints.PASS_DISTINCT_THROUGH, value = "false"))
     List<PostDTO> fetchPostsWithoutPostComments(List<Long> ids);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT p FROM Post p WHERE p.id = ?1")
+    PostDTO fetchPostById(Long id);
 }
