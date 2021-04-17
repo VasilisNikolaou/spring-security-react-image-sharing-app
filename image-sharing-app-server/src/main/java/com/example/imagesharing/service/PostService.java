@@ -32,7 +32,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final AmazonS3Service amazonS3Service;
 
-    public Post uploadImageAndSavePost(PostRequest postRequest) {
+    public PostDTO uploadImageAndSavePost(PostRequest postRequest) {
         MultipartFile image = postRequest.getImage();
         String title = postRequest.getTitle();
 
@@ -51,7 +51,9 @@ public class PostService {
             ioe.printStackTrace();
         }
 
-        return this.postRepository.save(new Post(title, key));
+        var post = this.postRepository.save(new Post(title, key));
+
+        return this.postRepository.fetchPostById(post.getId());
     }
 
     public PagedPostDTO pageablePosts(Pageable pageable) {
@@ -67,14 +69,15 @@ public class PostService {
                         linkTo(methodOn(PostController.class)
                                 .pagedPosts(pagedIdsOfPosts.getNumber() + 1,
                                         pagedIdsOfPosts.getSize())).toString());
+
+                pagedPostDTO.setLastLink(
+                        linkTo(methodOn(PostController.class)
+                                .pagedPosts(pagedIdsOfPosts.getTotalPages() - 1,
+                                        pagedIdsOfPosts.getSize())).toString());
+
+            } else {
+                pagedPostDTO.setLast(pagedIdsOfPosts.isLast());
             }
-
-            pagedPostDTO.setLastLink(
-                    linkTo(methodOn(PostController.class)
-                            .pagedPosts(pagedIdsOfPosts.getTotalPages() - 1,
-                                    pagedIdsOfPosts.getSize())).toString());
-
-            pagedPostDTO.setLast(pagedIdsOfPosts.isLast());
 
             return pagedPostDTO;
         }

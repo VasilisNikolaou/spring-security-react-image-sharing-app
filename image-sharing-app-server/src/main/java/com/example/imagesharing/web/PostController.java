@@ -45,7 +45,7 @@ public class PostController {
 
             return ResponseEntity.badRequest().body(apiError);
         }
-        Post post = this.postService.uploadImageAndSavePost(postRequest);
+        PostDTO post = this.postService.uploadImageAndSavePost(postRequest);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -64,12 +64,12 @@ public class PostController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PostDTO> post(@PathVariable Long id) {
+    public ResponseEntity<PostDTO> singlePost(@PathVariable Long id) {
         return ResponseEntity.ok(this.postService.findPostById(id));
     }
 
     @GetMapping("/image/{objectKey}")
-    public byte[] downloadImage(@PathVariable String objectKey) {
+    public byte[] downloadPostImage(@PathVariable String objectKey) {
         return this.postService.downloadImage(objectKey);
     }
 

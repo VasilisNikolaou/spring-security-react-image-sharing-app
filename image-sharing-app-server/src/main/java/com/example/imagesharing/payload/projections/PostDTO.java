@@ -4,6 +4,7 @@ import com.example.imagesharing.model.Post;
 import com.example.imagesharing.web.PostController;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Value;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
@@ -15,26 +16,27 @@ public interface PostDTO {
 
     Long getId();
 
+    @JsonProperty("created_by")
     Long getCreatedBy();
 
+    @JsonProperty("created_at")
     Instant getCreatedAt();
 
-    Instant getModifiedAt();
-
+    @JsonProperty("title")
     String getPostImageTitle();
 
     @JsonIgnore
     String getPostImageLink();
 
-    @Value("#{target.postComments.size()}")
+    @JsonProperty("total_comments")
     Integer getTotalComments();
 
     default String getImage_Url() {
-        return linkTo(PostController.class).slash("/image/"+getPostImageLink()).toString();
+        return linkTo(PostController.class).slash("/image/" + getPostImageLink()).toString();
     }
 
     default String getPost_Url() {
-        return linkTo(methodOn(PostController.class).post(getId())).toString();
+        return linkTo(methodOn(PostController.class).singlePost(getId())).toString();
     }
 
 }
