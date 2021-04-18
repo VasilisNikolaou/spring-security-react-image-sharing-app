@@ -15,10 +15,10 @@ public class PagedPostDTO {
     @JsonProperty("posts")
     private List<PostDTO> postDTOS;
 
-    @JsonProperty("next_link")
+    @JsonProperty("next_url")
     private String nextLink;
 
-    @JsonProperty("last_link")
+    @JsonProperty("last_url")
     private String lastLink;
 
     @JsonProperty("isLast")

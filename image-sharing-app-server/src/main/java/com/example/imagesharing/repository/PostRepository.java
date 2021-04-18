@@ -17,12 +17,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Long> fetchIdsOfPosts(Pageable pageable);
 
     @Transactional(readOnly = true)
-    @Query("SELECT p.id AS id, p.createdBy AS createdBy, p.createdAt AS createdAt, p.postImageLink AS postImageLink, " +
-            "size(p.postComments) AS totalComments FROM Post p WHERE p.id IN ?1")
+    @Query("SELECT p.id AS id, p.createdBy AS createdBy, p.createdAt AS createdAt, p.modifiedAt AS modifiedAt, " +
+            "p.postImageLink AS postImageLink, size(p.postComments) AS totalComments FROM Post p WHERE p.id IN ?1")
     List<PostDTO> fetchPostsWithoutPostComments(List<Long> ids);
 
     @Transactional(readOnly = true)
-    @Query("SELECT p.id AS id, p.createdBy AS createdBy, p.createdAt AS createdAt, p.postImageLink AS postImageLink" +
-            " FROM Post p WHERE p.id = ?1")
+    @Query("SELECT p.id AS id, p.createdBy AS createdBy, p.createdAt AS createdAt, p.modifiedAt AS modifiedAt, " +
+            "p.postImageLink AS postImageLink FROM Post p WHERE p.id = ?1")
     PostDTO fetchPostById(Long id);
 }

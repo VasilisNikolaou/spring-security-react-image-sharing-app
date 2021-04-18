@@ -1,6 +1,5 @@
 package com.example.imagesharing.web;
 
-import com.example.imagesharing.model.Post;
 import com.example.imagesharing.payload.ApiError;
 import com.example.imagesharing.payload.PostRequest;
 import com.example.imagesharing.payload.projections.PagedPostDTO;
@@ -9,8 +8,6 @@ import com.example.imagesharing.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +15,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController

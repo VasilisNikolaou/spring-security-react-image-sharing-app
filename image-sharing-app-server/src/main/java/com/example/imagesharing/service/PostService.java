@@ -10,7 +10,6 @@ import com.example.imagesharing.repository.PostRepository;
 import com.example.imagesharing.web.PostController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 

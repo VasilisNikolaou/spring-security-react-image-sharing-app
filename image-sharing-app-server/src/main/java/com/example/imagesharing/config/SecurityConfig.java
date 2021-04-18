@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                 .authorizeRequests()
-                    .mvcMatchers("/api/auth/**", "/h2-console/**")
+                    .mvcMatchers("/api/auth/**", "/h2-console/**", "/api/root")
                     .permitAll()
                 .anyRequest()
                     .authenticated();
