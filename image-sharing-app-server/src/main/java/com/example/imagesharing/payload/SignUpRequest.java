@@ -1,12 +1,15 @@
 package com.example.imagesharing.payload;
 
-import lombok.Value;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 
-@Value
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class SignUpRequest {
 
     @NotBlank(message = "username cannot be null or empty")
