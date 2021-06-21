@@ -3,7 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Signup from './Signup';
-import {useState} from 'react';
+import { useState } from 'react';
 
 const useStyles = makeStyles({
     root: {
@@ -14,22 +14,22 @@ const useStyles = makeStyles({
     formfield: {
         width: '330px',
         padding: '10px',
-        margin: '5px'
+        margin: '10px'
     }
 })
 
 const Login = () => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
-    
+
     const handleClose = () => {
         setOpen(false);
     }
 
     return (
         <form className={classes.root}>
-            <TextField id="outlined-basic" variant="outlined" className={classes.formfield} />
-            <TextField id="outlined-basic" variant="outlined" className={classes.formfield} />
+            <TextField placeholder="Email or Username" variant="outlined" className={classes.formfield} />
+            <TextField placeholder="Password" variant="outlined" className={classes.formfield} />
             <Button variant="contained" color="primary" className={classes.formfield}>
                 Login
             </Button>
