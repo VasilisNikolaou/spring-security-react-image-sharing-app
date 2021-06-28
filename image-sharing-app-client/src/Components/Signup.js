@@ -10,6 +10,19 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core';
 import { signup } from './utils/APIUtils.js';
+import {
+    USERNAME_MIN_LENGTH,
+    USERNAME_MAX_LENGTH,
+    PASSWORD_MIN_LENGTH,
+    PASSWORD_MAX_LENGTH,
+    FIRSTNAME_MIN_LENGTH,
+    FIRSTNAME_MAX_LENGTH,
+    LASTNAME_MIN_LENGTH,
+    LASTNAME_MAX_LENGTH,
+    EMAIL_MIN_LENGTH,
+    EMAIL_MAX_LENGTH
+} from './constants/constants.js';
+
 
 const useStyles = makeStyles({
     iconButton: {
@@ -20,11 +33,11 @@ const useStyles = makeStyles({
 })
 
 const Signup = ({ open, onClose }) => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState({ value: '', errorMsg: '' });
+    const [password, setPassword] = useState({ value: '', errorMsg: '' });
+    const [firstName, setFirstName] = useState({ value: '', errorMsg: '' });
+    const [lastName, setLastName] = useState({ value: '', errorMsg: '' });
+    const [email, setEmail] = useState({ value: '', errorMsg: '' });
 
     const classes = useStyles();
 
@@ -48,6 +61,25 @@ const Signup = ({ open, onClose }) => {
         }
     }
 
+    const handleInputChange = (event, validationFunction) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        const result = validationFunction(value);
+
+        if (name === 'username') {
+            setUsername({ value: value, errorMsg: result });
+        } else if (name === 'password') {
+            setPassword({ value: value, errorMsg: result });
+        } else if (name === 'firstName') {
+            setFirstName({ value: value, errorMsg: result });
+        } else if (name === 'lastName') {
+            setLastName({ value: value, errorMsg: result });
+        } else {
+            setEmail({ value: value, errorMsg: result });
+        }
+
+    }
+
     return (
         <Dialog open={open}>
             <DialogTitle>New Account</DialogTitle>
@@ -58,14 +90,69 @@ const Signup = ({ open, onClose }) => {
                 <DialogContentText>
                     Create an account fast and easy
                 </DialogContentText>
-                <TextField type="text" margin="dense" fullWidth placeholder="Username" variant="outlined" value={username} onChange={e => setUsername(e.target.value)} />
-                <TextField type="password" margin="dense" fullWidth placeholder="Password" variant="outlined" value={password} onChange={e => setPassword(e.target.value)} />
-                <TextField type="text" margin="dense" fullWidth placeholder="First Name" variant="outlined" value={firstName} onChange={e => setFirstName(e.target.value)} />
-                <TextField type="text" margin="dense" fullWidth placeholder="Last Name" variant="outlined" value={lastName} onChange={e => setLastName(e.target.value)} />
-                <TextField type="text" margin="dense" fullWidth placeholder="Email" variant="outlined" value={email} onChange={e => setEmail(e.target.value)} />
+                <TextField type="text"
+                    margin="dense"
+                    fullWidth
+                    placeholder="Username"
+                    variant="outlined"
+                    name="username"
+                    value={username.value}
+                    onChange={(event) => handleInputChange(event, validateUsername)}
+                    error={username.errorMsg !== ''}
+                    helperText={username.errorMsg !== '' ? username.errorMsg : ''} />
+                <TextField
+                    type="password"
+                    margin="dense"
+                    fullWidth
+                    placeholder="Password"
+                    variant="outlined"
+                    name="password"
+                    value={password.value}
+                    onChange={(event) => handleInputChange(event, validatePassword)}
+                    error={password.errorMsg !== ''}
+                    helperText={password.errorMsg !== '' ? password.errorMsg : ''} />
+                <TextField
+                    type="text"
+                    margin="dense"
+                    fullWidth
+                    placeholder="First Name"
+                    variant="outlined"
+                    name="firstName"
+                    value={firstName.value}
+                    onChange={(event) => handleInputChange(event, validateFirstName)}
+                    error={firstName.errorMsg !== ''}
+                    helperText={firstName.errorMsg !== '' ? firstName.errorMsg : ''} />
+                <TextField
+                    type="text"
+                    margin="dense"
+                    fullWidth
+                    placeholder="Last Name"
+                    variant="outlined"
+                    name="lastName"
+                    value={lastName.value}
+                    onChange={(event) => handleInputChange(event, validateLastName)}
+                    error={lastName.errorMsg !== ''}
+                    helperText={lastName.errorMsg !== '' ? lastName.errorMsg : ''} />
+                <TextField
+                    type="text"
+                    margin="dense"
+                    fullWidth
+                    placeholder="Email"
+                    variant="outlined"
+                    name="email"
+                    value={email.value}
+                    onChange={(event) => handleInputChange(event, validateEmail)}
+                    error={email.errorMsg !== ''}
+                    helperText={email.errorMsg !== '' ? email.errorMsg : ''} />
             </DialogContent>
             <DialogActions>
-                <Button type="submit" variant="contained" color="primary" size="large" onClick={handleSubmit} fullWidth>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    onClick={handleSubmit}
+                    fullWidth>
                     Sign up
                 </Button>
             </DialogActions>
@@ -73,5 +160,59 @@ const Signup = ({ open, onClose }) => {
     );
 };
 
+
+const validateUsername = (username) => {
+    if (isEmpty(username)) {
+        return 'username cannot be empty';
+    } else if (username.length < USERNAME_MIN_LENGTH || username.length > USERNAME_MAX_LENGTH) {
+        return `username must be between ${USERNAME_MIN_LENGTH} and ${USERNAME_MAX_LENGTH}`;
+    }
+
+    return '';
+}
+
+const validateFirstName = (firstName) => {
+    if (isEmpty(firstName)) {
+        return 'first name cannot be empty';
+    } else if (firstName.length < FIRSTNAME_MIN_LENGTH || firstName.length > FIRSTNAME_MAX_LENGTH) {
+        return `first name must be between ${FIRSTNAME_MIN_LENGTH} and ${FIRSTNAME_MAX_LENGTH}`;
+    }
+
+    return '';
+}
+
+const validatePassword = (password) => {
+    if (isEmpty(password)) {
+        return 'password cannot be empty';
+    } else if (password.length < PASSWORD_MIN_LENGTH || password.length > PASSWORD_MAX_LENGTH) {
+        return `password must be between ${PASSWORD_MIN_LENGTH} and ${PASSWORD_MAX_LENGTH}`;
+    }
+
+    return '';
+}
+
+const validateLastName = (lastName) => {
+    if (isEmpty(lastName)) {
+        return 'last name cannot be empty';
+    } else if (lastName.length < LASTNAME_MIN_LENGTH || lastName.length > LASTNAME_MAX_LENGTH) {
+        return `last name must be between ${LASTNAME_MIN_LENGTH} and ${LASTNAME_MAX_LENGTH}`;
+    }
+
+    return '';
+}
+
+const validateEmail = (email) => {
+    if (isEmpty(email)) {
+        return 'email cannot be empty';
+    } else if (email.length < EMAIL_MIN_LENGTH || email.length > EMAIL_MAX_LENGTH) {
+        return `email must be between ${EMAIL_MIN_LENGTH} and ${EMAIL_MAX_LENGTH}`;
+    }
+
+    return '';
+}
+
+function isEmpty(str) {
+    return (!str || str.length === 0);
+}
 
 export default Signup;
