@@ -33,11 +33,11 @@ const useStyles = makeStyles({
 })
 
 const Signup = ({ open, onClose }) => {
-    const [username, setUsername] = useState({ value: '', errorMsg: '' });
-    const [password, setPassword] = useState({ value: '', errorMsg: '' });
-    const [firstName, setFirstName] = useState({ value: '', errorMsg: '' });
-    const [lastName, setLastName] = useState({ value: '', errorMsg: '' });
-    const [email, setEmail] = useState({ value: '', errorMsg: '' });
+    const [username, setUsername] = useState({ value: '' });
+    const [password, setPassword] = useState({ value: '' });
+    const [firstName, setFirstName] = useState({ value: '' });
+    const [lastName, setLastName] = useState({ value: '' });
+    const [email, setEmail] = useState({ value: '' });
 
     const classes = useStyles();
 
@@ -67,17 +67,23 @@ const Signup = ({ open, onClose }) => {
         const result = validationFunction(value);
 
         if (name === 'username') {
-            setUsername({ value: value, errorMsg: result });
+            setUsername({ value: value, ...result });
         } else if (name === 'password') {
-            setPassword({ value: value, errorMsg: result });
+            setPassword({ value: value, ...result });
         } else if (name === 'firstName') {
-            setFirstName({ value: value, errorMsg: result });
+            setFirstName({ value: value, ...result });
         } else if (name === 'lastName') {
-            setLastName({ value: value, errorMsg: result });
+            setLastName({ value: value, ...result });
         } else {
-            setEmail({ value: value, errorMsg: result });
+            setEmail({ value: value, ...result });
         }
 
+    }
+
+    const isFormInvalid = () => {
+        return !(username.errorMsg === '' &&
+            password.errorMsg === '' && firstName.errorMsg === '' &&
+            lastName.errorMsg === '' && email.errorMsg === '');
     }
 
     return (
@@ -98,8 +104,8 @@ const Signup = ({ open, onClose }) => {
                     name="username"
                     value={username.value}
                     onChange={(event) => handleInputChange(event, validateUsername)}
-                    error={username.errorMsg !== ''}
-                    helperText={username.errorMsg !== '' ? username.errorMsg : ''} />
+                    error={username.errorMsg ? username.errorMsg !== '' : false}
+                    helperText={username.errorMsg && username.errorMsg} />
                 <TextField
                     type="password"
                     margin="dense"
@@ -109,8 +115,8 @@ const Signup = ({ open, onClose }) => {
                     name="password"
                     value={password.value}
                     onChange={(event) => handleInputChange(event, validatePassword)}
-                    error={password.errorMsg !== ''}
-                    helperText={password.errorMsg !== '' ? password.errorMsg : ''} />
+                    error={password.errorMsg ? password.errorMsg !== '' : false}
+                    helperText={password.errorMsg && password.errorMsg} />
                 <TextField
                     type="text"
                     margin="dense"
@@ -120,8 +126,8 @@ const Signup = ({ open, onClose }) => {
                     name="firstName"
                     value={firstName.value}
                     onChange={(event) => handleInputChange(event, validateFirstName)}
-                    error={firstName.errorMsg !== ''}
-                    helperText={firstName.errorMsg !== '' ? firstName.errorMsg : ''} />
+                    error={firstName.errorMsg ? firstName.errorMsg !== '' : false}
+                    helperText={firstName.errorMsg && firstName.errorMsg} />
                 <TextField
                     type="text"
                     margin="dense"
@@ -131,8 +137,8 @@ const Signup = ({ open, onClose }) => {
                     name="lastName"
                     value={lastName.value}
                     onChange={(event) => handleInputChange(event, validateLastName)}
-                    error={lastName.errorMsg !== ''}
-                    helperText={lastName.errorMsg !== '' ? lastName.errorMsg : ''} />
+                    error={lastName.errorMsg ? lastName.errorMsg !== '' : false}
+                    helperText={lastName.errorMsg && lastName.errorMsg} />
                 <TextField
                     type="text"
                     margin="dense"
@@ -142,8 +148,8 @@ const Signup = ({ open, onClose }) => {
                     name="email"
                     value={email.value}
                     onChange={(event) => handleInputChange(event, validateEmail)}
-                    error={email.errorMsg !== ''}
-                    helperText={email.errorMsg !== '' ? email.errorMsg : ''} />
+                    error={email.errorMsg ? email.errorMsg !== '' : false}
+                    helperText={email.errorMsg && email.errorMsg} />
             </DialogContent>
             <DialogActions>
                 <Button
@@ -152,6 +158,7 @@ const Signup = ({ open, onClose }) => {
                     color="primary"
                     size="large"
                     onClick={handleSubmit}
+                    disabled={isFormInvalid()}
                     fullWidth>
                     Sign up
                 </Button>
@@ -163,52 +170,68 @@ const Signup = ({ open, onClose }) => {
 
 const validateUsername = (username) => {
     if (isEmpty(username)) {
-        return 'username cannot be empty';
+        return {
+            errorMsg: 'username cannot be empty'
+        }
     } else if (username.length < USERNAME_MIN_LENGTH || username.length > USERNAME_MAX_LENGTH) {
-        return `username must be between ${USERNAME_MIN_LENGTH} and ${USERNAME_MAX_LENGTH}`;
+        return {
+            errorMsg: `username must be between ${USERNAME_MIN_LENGTH} and ${USERNAME_MAX_LENGTH}`
+        }
     }
 
-    return '';
+    return {
+        errorMsg: ''
+    }
 }
 
 const validateFirstName = (firstName) => {
     if (isEmpty(firstName)) {
-        return 'first name cannot be empty';
+        return {
+            errorMsg: 'first name cannot be empty'
+        }
     } else if (firstName.length < FIRSTNAME_MIN_LENGTH || firstName.length > FIRSTNAME_MAX_LENGTH) {
-        return `first name must be between ${FIRSTNAME_MIN_LENGTH} and ${FIRSTNAME_MAX_LENGTH}`;
+        return { errorMsg: `first name must be between ${FIRSTNAME_MIN_LENGTH} and ${FIRSTNAME_MAX_LENGTH}` }
     }
 
-    return '';
+    return {
+        errorMsg: ''
+    }
 }
 
 const validatePassword = (password) => {
     if (isEmpty(password)) {
-        return 'password cannot be empty';
+        return { errorMsg: 'password cannot be empty' }
     } else if (password.length < PASSWORD_MIN_LENGTH || password.length > PASSWORD_MAX_LENGTH) {
-        return `password must be between ${PASSWORD_MIN_LENGTH} and ${PASSWORD_MAX_LENGTH}`;
+        return { errorMsg: `password must be between ${PASSWORD_MIN_LENGTH} and ${PASSWORD_MAX_LENGTH}` }
     }
 
-    return '';
+    return {
+        errorMsg: ''
+    }
 }
 
 const validateLastName = (lastName) => {
     if (isEmpty(lastName)) {
-        return 'last name cannot be empty';
+        return { errorMsg: 'last name cannot be empty' }
     } else if (lastName.length < LASTNAME_MIN_LENGTH || lastName.length > LASTNAME_MAX_LENGTH) {
-        return `last name must be between ${LASTNAME_MIN_LENGTH} and ${LASTNAME_MAX_LENGTH}`;
+        return { errorMsg: `last name must be between ${LASTNAME_MIN_LENGTH} and ${LASTNAME_MAX_LENGTH}` }
     }
 
-    return '';
+    return {
+        errorMsg: ''
+    }
 }
 
 const validateEmail = (email) => {
     if (isEmpty(email)) {
-        return 'email cannot be empty';
+        return { errorMsg: 'email cannot be empty' }
     } else if (email.length < EMAIL_MIN_LENGTH || email.length > EMAIL_MAX_LENGTH) {
-        return `email must be between ${EMAIL_MIN_LENGTH} and ${EMAIL_MAX_LENGTH}`;
+        return { errorMsg: `email must be between ${EMAIL_MIN_LENGTH} and ${EMAIL_MAX_LENGTH}` }
     }
 
-    return '';
+    return {
+        errorMsg: ''
+    }
 }
 
 function isEmpty(str) {
